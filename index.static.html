@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkPulse — Enterprise Operational Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- LANDING PAGE -->
+<div id="landingPage" class="landing-page">
+  <nav class="landing-nav">
+    <div class="landing-nav-inner">
+      <div class="logo-mark-lg">
+        <div class="logo-icon">W</div>
+        <span class="logo-name">WorkPulse</span>
+      </div>
+      <div class="landing-nav-links">
+        <a href="#features">Features</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="landing-nav-actions">
+        <button class="btn-ghost" onclick="App.goToApp()">Sign In</button>
+        <button class="btn-primary-lg" onclick="App.goToApp()">Get Started Free →</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero-section">
+    <div class="hero-badge">✦ AI-First Enterprise Platform · Trusted by 500+ teams</div>
+    <h1 class="hero-title">Operational intelligence<br>for <span class="hero-gradient">modern teams</span></h1>
+    <p class="hero-sub">WorkPulse unifies async standups, productivity tracking, blocker management, and AI-powered insights — giving every leader crystal-clear visibility into their team.</p>
+    <div class="hero-cta">
+      <button class="btn-primary-xl" onclick="App.goToApp()">Start Free Trial — No credit card</button>
+      <button class="btn-outline-xl" onclick="App.goToApp()">▶ Watch Demo</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="stat-val">94.2%</div><div class="stat-label">Avg submission rate</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="stat-val">4.2h</div><div class="stat-label">Avg blocker resolution</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="stat-val">87pt</div><div class="stat-label">Team health score</div></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><div class="stat-val">47k</div><div class="stat-label">Teams onboarded</div></div>
+    </div>
+  </section>
+
+  <section class="dashboard-preview-section">
+    <div class="browser-frame">
+      <div class="browser-bar">
+        <div class="browser-dots">
+          <div class="dot-red"></div>
+          <div class="dot-yellow"></div>
+          <div class="dot-green"></div>
+        </div>
+        <div class="browser-url">app.workpulse.io/dashboard</div>
+      </div>
+      <div class="preview-dashboard">
+        <div class="preview-kpis">
+          <div class="preview-kpi teal"><div class="pk-val">94.2%</div><div class="pk-label">Submission Rate</div></div>
+          <div class="preview-kpi amber"><div class="pk-val">7</div><div class="pk-label">Active Blockers</div></div>
+          <div class="preview-kpi green"><div class="pk-val">87/100</div><div class="pk-label">Team Health</div></div>
+          <div class="preview-kpi purple"><div class="pk-val">12</div><div class="pk-label">AI Insights</div></div>
+        </div>
+        <div class="preview-charts">
+          <div class="preview-chart-box">
+            <div class="pch-title">Productivity Trend ↑ 12%</div>
+            <canvas id="heroChart" width="340" height="100"></canvas>
+          </div>
+          <div class="preview-chart-box">
+            <div class="pch-title">Dept. Comparison</div>
+            <div class="dept-bars">
+              <div class="dept-bar-row"><span>Engineering</span><div class="dbar"><div class="dbar-fill blue" style="width:91%"></div></div><span class="dval">91%</span></div>
+              <div class="dept-bar-row"><span>Product</span><div class="dbar"><div class="dbar-fill teal" style="width:96%"></div></div><span class="dval">96%</span></div>
+              <div class="dept-bar-row"><span>Design</span><div class="dbar"><div class="dbar-fill purple" style="width:88%"></div></div><span class="dval">88%</span></div>
+              <div class="dept-bar-row"><span>Marketing</span><div class="dbar"><div class="dbar-fill amber" style="width:74%"></div></div><span class="dval">74%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section" id="features">
+    <div class="section-label">FEATURES</div>
+    <h2 class="section-title">Everything your team needs,<br>powered by AI</h2>
+    <div class="features-grid">
+      <div class="feature-card featured-card">
+        <div class="fc-icon" style="background:var(--blue-dim)">⚡</div>
+        <h3>AI-Powered Standups</h3>
+        <p>Async standups with AI summarization, blocker detection, writing enhancement, and smart suggestions. No more meaningless meetings.</p>
+        <div class="fc-tags"><span>AI Enhance</span><span>Autosave</span><span>Markdown</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--purple-dim)">🧠</div>
+        <h3>AI Copilot</h3>
+        <p>Chat with your organizational data. Ask who missed updates, what are recurring blockers, or get a full team intelligence summary.</p>
+        <div class="fc-tags"><span>Streaming</span><span>Context-aware</span></div>
+      </div>
+      <div className="feature-card">
+        <div class="fc-icon" style="background:var(--teal-dim)">📊</div>
+        <h3>Enterprise Analytics</h3>
+        <p>GitHub-style heatmaps, department comparisons, streak systems, blocker trends, and executive-grade reports with exports.</p>
+        <div class="fc-tags"><span>PDF</span><span>XLSX</span><span>Heatmaps</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--amber-dim)">🚧</div>
+        <h3>Blocker Management</h3>
+        <p>Four-tier severity system with assignment, escalation, AI categorization, resolution tracking, and blocker trend analytics.</p>
+        <div class="fc-tags"><span>Escalation</span><span>Severity</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--red-dim)">🛡️</div>
+        <h3>Enterprise Security</h3>
+        <p>Multi-tenant org isolation, RBAC, audit logging, Firestore security rules, 2FA, SSO — SOC-2 ready from day one.</p>
+        <div class="fc-tags"><span>RBAC</span><span>SSO</span><span>Audit</span></div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon" style="background:var(--green-dim)">🔔</div>
+        <h3>Smart Notifications</h3>
+        <p>Realtime alerts, missed standup reminders, blocker escalations, burnout warnings — with Slack and Teams integration.</p>
+        <div class="fc-tags"><span>Slack</span><span>Teams</span><span>Email</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-section" id="pricing">
+    <div class="section-label">PRICING</div>
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$0<span>/mo</span></div>
+        <div class="plan-desc">For small teams getting started</div>
+        <ul class="plan-features">
+          <li>✓ Up to 10 members</li>
+          <li>✓ Daily standups</li>
+          <li>✓ Basic analytics</li>
+          <li>✓ 30-day history</li>
+        </ul>
+        <button class="btn-outline-plan" onclick="App.goToApp()">Get Started</button>
+      </div>
+      <div class="pricing-card featured-plan">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$19<span>/mo per team</span></div>
+        <div class="plan-desc">For growing engineering teams</div>
+        <ul class="plan-features">
+          <li>✓ Unlimited members</li>
+          <li>✓ AI Copilot + Insights</li>
+          <li>✓ Advanced analytics</li>
+          <li>✓ Blocker management</li>
+          <li>✓ PDF/XLSX exports</li>
+          <li>✓ Slack integration</li>
+        </ul>
+        <button class="btn-primary-plan" onclick="App.goToApp()">Start Free Trial</button>
+      </div>
+      <div class="pricing-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Custom</div>
+        <div class="plan-desc">For large organizations</div>
+        <ul class="plan-features">
+          <li>✓ Everything in Pro</li>
+          <li>✓ SSO + SAML</li>
+          <li>✓ Dedicated support</li>
+          <li>✓ Custom integrations</li>
+          <li>✓ SLA guarantee</li>
+          <li>✓ Audit logs</li>
+        </ul>
+        <button class="btn-outline-plan" onclick="App.goToApp()">Contact Sales</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section" id="faq">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Frequently asked questions</h2>
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How does the AI copilot work? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a">The AI Copilot has full context of your organization's standup data, blocker history, and team metrics. You can ask natural language questions like "Who missed updates this week?" or "Show recurring blockers" and get intelligent, data-driven responses powered by Claude AI.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is our data isolated from other organizations? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a">Yes. WorkPulse uses a strict multi-tenant architecture with Firestore security rules ensuring complete organization isolation. Your data is never shared with or visible to other organizations.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What integrations are available? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a">WorkPulse integrates with Slack, Microsoft Teams, Google Calendar, Jira, Linear, and GitHub. Enterprise plans also support custom webhooks and API access.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I export reports? <span class="faq-arrow">↓</span></div>
+        <div class="faq-a">Absolutely. WorkPulse supports PDF, XLSX, and CSV exports for all reports — including branded executive summaries with charts, AI-generated narratives, and department comparisons. You can also schedule automatic report delivery.</div>
+      </div>

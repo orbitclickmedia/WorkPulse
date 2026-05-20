@@ -1,0 +1,133 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper functions ─────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOrgMember(orgId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/organizations/$(orgId)/users/$(request.auth.uid));
+    }
+
+    function getUserData(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)/users/$(request.auth.uid)).data;
+    }
+
+    function getUserRole(orgId) {
+      return getUserData(orgId).role;
+    }
+
+    function isAdmin(orgId) {
+      return isOrgMember(orgId) && getUserRole(orgId) == 'admin';
+    }
+
+    function isManagerOrAbove(orgId) {
+      return isOrgMember(orgId) && getUserRole(orgId) in ['admin', 'hr', 'manager'];
+    }
+
+    function isTeamLeaderOrAbove(orgId) {
+      return isOrgMember(orgId) && getUserRole(orgId) in ['admin', 'hr', 'manager', 'team_leader'];
+    }
+
+    function isSelf(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function notChangingRole() {
+      return !('role' in request.resource.data) ||
+             request.resource.data.role == resource.data.role;
+    }
+
+    // ─── Organizations ────────────────────────────────────────────────────────
+
+    match /organizations/{orgId} {
+      allow read: if isOrgMember(orgId);
+      allow create: if isSignedIn();
+      allow update: if isAdmin(orgId);
+      allow delete: if false; // No org deletion via client
+
+      // ─── Users ──────────────────────────────────────────────────────────────
+
+      match /users/{userId} {
+        allow read: if isOrgMember(orgId);
+        allow create: if isAdmin(orgId) || isSelf(userId);
+        allow update: if isSelf(userId) && notChangingRole() || isAdmin(orgId);
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Teams ──────────────────────────────────────────────────────────────
+
+      match /teams/{teamId} {
+        allow read: if isOrgMember(orgId);
+        allow create: if isManagerOrAbove(orgId);
+        allow update: if isManagerOrAbove(orgId);
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Daily Updates (Standups) ────────────────────────────────────────────
+
+      match /daily_updates/{updateId} {
+        allow read: if isOrgMember(orgId);
+        allow create: if isOrgMember(orgId) &&
+                         request.resource.data.userId == request.auth.uid;
+        allow update: if (isSelf(resource.data.userId) &&
+                          resource.data.date == request.resource.data.date) ||
+                         isManagerOrAbove(orgId);
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Blockers ────────────────────────────────────────────────────────────
+
+      match /blockers/{blockerId} {
+        allow read: if isOrgMember(orgId);
+        allow create: if isOrgMember(orgId);
+        allow update: if isTeamLeaderOrAbove(orgId) ||
+                         isSelf(resource.data.reportedBy);
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Analytics ───────────────────────────────────────────────────────────
+
+      match /analytics/{docId} {
+        allow read: if isOrgMember(orgId);
+        allow write: if isAdmin(orgId); // Only Cloud Functions write analytics
+      }
+
+      // ─── Reports ─────────────────────────────────────────────────────────────
+
+      match /reports/{reportId} {
+        allow read: if isOrgMember(orgId);
+        allow create: if isManagerOrAbove(orgId);
+        allow update: if isAdmin(orgId);
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Notifications ────────────────────────────────────────────────────────
+
+      match /notifications/{notifId} {
+        allow read: if isSelf(resource.data.userId) || isManagerOrAbove(orgId);
+        allow create: if isSignedIn(); // Cloud Functions or managers create
+        allow update: if isSelf(resource.data.userId); // Only self can mark read
+        allow delete: if isAdmin(orgId);
+      }
+
+      // ─── Departments ─────────────────────────────────────────────────────────
+
+      match /departments/{deptId} {
+        allow read: if isOrgMember(orgId);
+        allow write: if isAdmin(orgId);
+      }
+    }
+
+    // ─── Deny all else ────────────────────────────────────────────────────────
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
