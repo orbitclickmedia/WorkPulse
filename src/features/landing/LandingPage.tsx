@@ -120,7 +120,13 @@ const STATS = [
   { value: '94.2%', label: 'Avg Submission Rate' },
 ]
 
-export default function LandingPage({ onEnter }: { onEnter: () => void }) {
+export default function LandingPage({
+  onEnter,
+  onDemo,
+}: {
+  onEnter: () => void
+  onDemo?: () => void
+}) {
   const [scrollY, setScrollY] = useState(0)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
@@ -204,7 +210,7 @@ export default function LandingPage({ onEnter }: { onEnter: () => void }) {
             Start Free Trial →
           </button>
           <button
-            onClick={onEnter}
+            onClick={onDemo ?? onEnter}
             className="px-7 py-3 bg-transparent text-text-primary text-[14px] font-medium rounded-xl border border-border-default hover:bg-bg-secondary transition-all duration-150 cursor-pointer"
           >
             View Live Demo

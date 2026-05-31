@@ -15,7 +15,7 @@ import ReportsPanel from '@/features/reports/ReportsPanel'
 import SettingsPanel from '@/features/settings/SettingsPanel'
 import AllPanels from '@/features/all/AllPanels'
 
-export default function AppShell() {
+export default function AppShell({ demoMode = false }: { demoMode?: boolean }) {
   const { activePanel } = useAppStore()
 
   const panels: Record<string, React.ReactNode> = {
@@ -34,9 +34,9 @@ export default function AppShell() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-bg-primary">
-      <Sidebar />
+      <Sidebar demoMode={demoMode} />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <Topbar />
+        <Topbar demoMode={demoMode} />
         <main className="flex-1 overflow-y-auto p-5">
           <div className="animate-fade-in">
             {panels[activePanel] ?? <Dashboard />}

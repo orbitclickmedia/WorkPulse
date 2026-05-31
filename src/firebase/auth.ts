@@ -14,20 +14,27 @@ import {
   type User,
   type Unsubscribe,
 } from 'firebase/auth'
-import { auth, googleProvider } from './config'
-import { upsertUser } from './firestore'
+import { auth, googleProvider, firebaseEnabled } from './config'
+import { upsertUser, getUser } from './firestore'
+
+function requireAuth() {
+  if (!auth) throw new Error('Firebase is not configured. Add NEXT_PUBLIC_FIREBASE_* env vars.')
+  return auth
+}
 
 // ─── Google OAuth ─────────────────────────────────────────────────────────────
 
 export async function signInWithGoogle(orgId: string) {
-  const result = await signInWithPopup(auth, googleProvider)
+  const result = await signInWithPopup(requireAuth(), googleProvider)
   const user = result.user
 
+  const existing = (await getUser(orgId, user.uid)) as Record<string, unknown> | null
   await upsertUser(orgId, user.uid, {
     name: user.displayName ?? 'Unknown',
     email: user.email,
     photoURL: user.photoURL,
     provider: 'google',
+    role: (existing?.role as string) ?? 'admin',
     lastLoginAt: new Date().toISOString(),
   })
 
@@ -37,7 +44,7 @@ export async function signInWithGoogle(orgId: string) {
 // ─── Email / Password ─────────────────────────────────────────────────────────
 
 export async function signInWithEmail(email: string, password: string) {
-  const result = await signInWithEmailAndPassword(auth, email, password)
+  const result = await signInWithEmailAndPassword(requireAuth(), email, password)
   return result.user
 }
 
@@ -47,13 +54,14 @@ export async function signUpWithEmail(
   password: string,
   displayName: string
 ) {
-  const result = await createUserWithEmailAndPassword(auth, email, password)
+  const result = await createUserWithEmailAndPassword(requireAuth(), email, password)
   await updateProfile(result.user, { displayName })
 
   await upsertUser(orgId, result.user.uid, {
     name: displayName,
     email,
     provider: 'email',
+    role: 'employee',
     createdAt: new Date().toISOString(),
   })
 
@@ -61,22 +69,29 @@ export async function signUpWithEmail(
 }
 
 export async function resetPassword(email: string) {
-  await sendPasswordResetEmail(auth, email)
+  await sendPasswordResetEmail(requireAuth(), email)
 }
 
 // ─── Session ──────────────────────────────────────────────────────────────────
 
 export async function logout() {
+  if (!auth) return
   await signOut(auth)
 }
 
 export function onAuthChange(callback: (user: User | null) => void): Unsubscribe {
+  if (!auth) {
+    callback(null)
+    return () => {}
+  }
   return onAuthStateChanged(auth, callback)
 }
 
 export function getCurrentUser(): User | null {
-  return auth.currentUser
+  return auth?.currentUser ?? null
 }
+
+export { firebaseEnabled }
 
 // ─── Role check ───────────────────────────────────────────────────────────────
 
