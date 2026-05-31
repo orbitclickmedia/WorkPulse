@@ -1,11 +1,10 @@
-// firebase/config.ts
-// Initialize Firebase with environment variables
-
-import { initializeApp, getApps, getApp } from 'firebase/app'
-import { getAuth, GoogleAuthProvider } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
-import { getFunctions } from 'firebase/functions'
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app'
+import { getAuth, type Auth } from 'firebase/auth'
+import { getFirestore, type Firestore } from 'firebase/firestore'
+import { getStorage, type FirebaseStorage } from 'firebase/storage'
+import { getFunctions, type Functions } from 'firebase/functions'
+import { GoogleAuthProvider } from 'firebase/auth'
+import { isFirebaseConfigured } from '@/lib/firebase-env'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,13 +15,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Prevent re-initialization in Next.js hot reload
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
+export const firebaseEnabled = isFirebaseConfigured()
 
-export const auth = getAuth(app)
-export const db = getFirestore(app)
-export const storage = getStorage(app)
-export const functions = getFunctions(app, 'asia-south1') // Hyderabad region
+let app: FirebaseApp | null = null
+
+if (firebaseEnabled) {
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig)
+}
+
+export const auth: Auth | null = app ? getAuth(app) : null
+export const db: Firestore | null = app ? getFirestore(app) : null
+export const storage: FirebaseStorage | null = app ? getStorage(app) : null
+export const functions: Functions | null = app
+  ? getFunctions(app, 'asia-south1')
+  : null
 
 export const googleProvider = new GoogleAuthProvider()
 googleProvider.addScope('email')
