@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { ChatMessage, Notification, StandupEntry } from '@/types'
 import { NOTIFICATIONS } from '@/data/mock'
 
-type Panel = 'all' | 'dashboard' | 'standup' | 'copilot' | 'insights' | 'analytics' | 'teams' | 'blockers' | 'notifications' | 'reports' | 'settings'
+export type Panel = 'all' | 'dashboard' | 'standup' | 'copilot' | 'insights' | 'analytics' | 'teams' | 'blockers' | 'notifications' | 'reports' | 'settings'
 
 interface AppStore {
   activePanel: Panel

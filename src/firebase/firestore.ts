@@ -27,9 +27,15 @@ import { db } from './config'
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
+function requireDb() {
+  if (!db) throw new Error('Firestore is not configured.')
+  return db
+}
+
 /** Base path for all org-scoped collections */
 const orgPath = (orgId: string) => `organizations/${orgId}`
-const col = (orgId: string, name: string) => collection(db, orgPath(orgId), name)
+const col = (orgId: string, name: string) =>
+  collection(requireDb(), orgPath(orgId), name)
 
 function ts() {
   return serverTimestamp()
@@ -38,12 +44,12 @@ function ts() {
 // ─── Organizations ───────────────────────────────────────────────────────────
 
 export async function getOrganization(orgId: string) {
-  const snap = await getDoc(doc(db, 'organizations', orgId))
+  const snap = await getDoc(doc(requireDb(), 'organizations', orgId))
   return snap.exists() ? { id: snap.id, ...snap.data() } : null
 }
 
 export async function createOrganization(orgId: string, data: Record<string, unknown>) {
-  await setDoc(doc(db, 'organizations', orgId), {
+  await setDoc(doc(requireDb(), 'organizations', orgId), {
     ...data,
     createdAt: ts(),
     updatedAt: ts(),
@@ -51,7 +57,14 @@ export async function createOrganization(orgId: string, data: Record<string, unk
 }
 
 export async function updateOrganization(orgId: string, data: Record<string, unknown>) {
-  await updateDoc(doc(db, 'organizations', orgId), { ...data, updatedAt: ts() })
+  await updateDoc(doc(requireDb(), 'organizations', orgId), { ...data, updatedAt: ts() })
+}
+
+export async function ensureOrganization(orgId: string, name: string) {
+  const org = await getOrganization(orgId)
+  if (!org) {
+    await createOrganization(orgId, { name, plan: 'pro' })
+  }
 }
 
 // ─── Users ───────────────────────────────────────────────────────────────────

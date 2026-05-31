@@ -1,8 +1,11 @@
 'use client'
 
 import { useAppStore } from '@/store'
+import { useAuth } from '@/context/AuthProvider'
+import { useBlockers } from '@/hooks/useBlockers'
 import { cn } from '@/lib/utils'
 import type { Panel } from '@/store'
+import { CURRENT_USER } from '@/data/mock'
 
 type NavItem = {
   id: string
@@ -23,13 +26,6 @@ const NAV_ITEMS: NavItem[] = [
 const NAV_ANALYTICS: NavItem[] = [
   { id: 'analytics', label: 'Analytics', icon: '📊' },
   { id: 'reports', label: 'Reports', icon: '📄' },
-]
-
-const NAV_WORKSPACE: NavItem[] = [
-  { id: 'teams', label: 'Teams', icon: '👥' },
-  { id: 'blockers', label: 'Blockers', icon: '🚧', badge: 3, badgeVariant: 'red' },
-  { id: 'notifications', label: 'Notifications', icon: '🔔', badge: 5, badgeVariant: 'red' },
-  { id: 'settings', label: 'Settings', icon: '⚙️' },
 ]
 
 function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
@@ -73,10 +69,35 @@ function NavGroup({ label, items }: { label: string; items: NavItem[] }) {
   )
 }
 
-export default function Sidebar() {
+export default function Sidebar({ demoMode = false }: { demoMode?: boolean }) {
+  const { profile, signOut } = useAuth()
+  const { blockers } = useBlockers()
+
+  const displayName = profile?.name ?? CURRENT_USER.name
+  const displayRole = profile?.role ?? CURRENT_USER.role
+  const initials =
+    profile?.name
+      ?.split(' ')
+      .map((n) => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() ?? CURRENT_USER.avatarInitials
+
+  const workspaceItems: NavItem[] = [
+    { id: 'teams', label: 'Teams', icon: '👥' },
+    {
+      id: 'blockers',
+      label: 'Blockers',
+      icon: '🚧',
+      badge: blockers.length > 0 ? blockers.length : undefined,
+      badgeVariant: 'red',
+    },
+    { id: 'notifications', label: 'Notifications', icon: '🔔', badge: 5, badgeVariant: 'red' },
+    { id: 'settings', label: 'Settings', icon: '⚙️' },
+  ]
+
   return (
     <nav className="w-[220px] flex-shrink-0 bg-bg-secondary border-r border-border-subtle flex flex-col h-full z-20">
-      {/* Logo */}
       <div className="h-[52px] flex items-center px-4 gap-2.5 border-b border-border-subtle flex-shrink-0">
         <div className="w-7 h-7 rounded-[7px] bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-[13px] font-bold text-white flex-shrink-0">
           W
@@ -87,31 +108,34 @@ export default function Sidebar() {
         </span>
       </div>
 
-      {/* Nav */}
       <div className="flex-1 overflow-y-auto px-2 py-2 space-y-0">
         <NavGroup label="Main" items={NAV_ITEMS} />
         <NavGroup label="Analytics" items={NAV_ANALYTICS} />
-        <NavGroup label="Workspace" items={NAV_WORKSPACE} />
+        <NavGroup label="Workspace" items={workspaceItems} />
       </div>
 
-      {/* User */}
       <div className="px-2 py-2 border-t border-border-subtle flex-shrink-0">
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-bg-tertiary transition-colors cursor-pointer">
+        <button
+          type="button"
+          onClick={() => {
+            if (!demoMode) signOut()
+          }}
+          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-bg-tertiary transition-colors text-left"
+          title={demoMode ? 'Demo mode' : 'Sign out'}
+        >
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-[11px] font-semibold text-white flex-shrink-0">
-            PK
+            {initials}
           </div>
-          <div className="min-w-0">
-            <div className="text-[12px] font-medium text-text-primary truncate">Pavan Kumar</div>
-            <div className="text-[10px] text-text-muted">Admin · Ekluvya</div>
+          <div className="min-w-0 flex-1">
+            <div className="text-[12px] font-medium text-text-primary truncate">{displayName}</div>
+            <div className="text-[10px] text-text-muted capitalize">
+              {displayRole}
+              {demoMode ? ' · Demo' : ' · Ekluvya'}
+            </div>
           </div>
-          <div className="w-2 h-2 bg-green-400 rounded-full ml-auto flex-shrink-0" />
-        </div>
+          <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0" />
+        </button>
       </div>
     </nav>
   )
-}
-
-// Re-export Panel type for use in AppShell
-declare module '@/store' {
-  type Panel = 'all' | 'dashboard' | 'standup' | 'copilot' | 'insights' | 'analytics' | 'teams' | 'blockers' | 'notifications' | 'reports' | 'settings'
 }

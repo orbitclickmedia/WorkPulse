@@ -26,7 +26,7 @@ const PAGE_ACTIONS: Record<string, string> = {
 
 const SHOW_TABS = ['dashboard', 'analytics']
 
-export default function Topbar() {
+export default function Topbar({ demoMode = false }: { demoMode?: boolean }) {
   const { activePanel, setActivePanel, timeRange, setTimeRange } = useAppStore()
   const unreadCount = useAppStore((s) => s.notifications.filter((n) => !n.read).length)
 
@@ -37,9 +37,11 @@ export default function Topbar() {
       <h1 className="text-[14px] font-semibold text-text-primary">
         {PAGE_TITLES[activePanel] ?? 'WorkPulse'}
       </h1>
-      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-brand-purple/15 text-brand-purple border border-brand-purple/25">
-        Demo
-      </span>
+      {demoMode && (
+        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-brand-purple/15 text-brand-purple border border-brand-purple/25">
+          Demo
+        </span>
+      )}
       <span className="text-[12px] text-text-muted ml-0.5">
         {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
       </span>

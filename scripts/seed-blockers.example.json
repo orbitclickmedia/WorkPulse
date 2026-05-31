@@ -1,0 +1,22 @@
+[
+  {
+    "title": "API rate limit blocking production deploy pipeline",
+    "description": "External API rate limits are preventing automated deployment pipeline from completing.",
+    "severity": "critical",
+    "teamId": "t1",
+    "teamName": "Engineering",
+    "reportedBy": "Arjun Mehta",
+    "tags": ["DevOps", "Deploy", "API"],
+    "resolved": false
+  },
+  {
+    "title": "Adobe CC license renewal pending",
+    "description": "Adobe Creative Cloud licenses expire in 24 hours.",
+    "severity": "high",
+    "teamId": "t2",
+    "teamName": "Design",
+    "reportedBy": "Pavan Kumar",
+    "tags": ["Licensing", "IT"],
+    "resolved": false
+  }
+]
